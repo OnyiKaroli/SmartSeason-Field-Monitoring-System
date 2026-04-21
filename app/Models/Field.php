@@ -44,4 +44,14 @@ class Field extends Model
     {
         return $this->hasMany(FieldUpdate::class)->latest();
     }
+
+    public function getStatusAttribute(): string
+    {
+        return app(\App\Services\FieldStatusService::class)->getStatus($this);
+    }
+
+    public function getStatusReasonAttribute(): string
+    {
+        return app(\App\Services\FieldStatusService::class)->getStatusReason($this);
+    }
 }
