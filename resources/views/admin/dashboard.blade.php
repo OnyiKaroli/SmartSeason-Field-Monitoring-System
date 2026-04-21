@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="title">Admin Dashboard — {{ config('app.name') }}</x-slot>
+    <x-slot name="title">Admin Dashboard - {{ config('app.name') }}</x-slot>
 
     <x-slot name="header">
         <div class="flex items-center justify-between">
@@ -14,7 +14,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         {{-- Placeholder metric cards --}}
-        @foreach ([['Total Fields', '—', 'emerald'], ['Active Fields', '—', 'blue'], ['At Risk', '—', 'amber']] as [$label, $value, $color])
+        @foreach ([['Total Fields', '-', 'emerald'], ['Active Fields', '-', 'blue'], ['At Risk', '-', 'amber']] as [$label, $value, $color])
             <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-4">
                 <div class="w-10 h-10 rounded-lg bg-{{ $color }}-100 flex items-center justify-center shrink-0">
                     <span class="text-{{ $color }}-600 text-lg font-bold">{{ $value }}</span>

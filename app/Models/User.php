@@ -65,4 +65,20 @@ class User extends Authenticatable
     {
         return $this->role === 'field_agent';
     }
+
+    /**
+     * Get the fields assigned to this user.
+     */
+    public function assignedFields()
+    {
+        return $this->hasMany(Field::class, 'assigned_agent_id');
+    }
+
+    /**
+     * Get the fields created by this user.
+     */
+    public function createdFields()
+    {
+        return $this->hasMany(Field::class, 'created_by');
+    }
 }

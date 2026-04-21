@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="title">My Fields — {{ config('app.name') }}</x-slot>
+    <x-slot name="title">My Fields - {{ config('app.name') }}</x-slot>
 
     <x-slot name="header">
         <div class="flex items-center justify-between">
@@ -13,7 +13,7 @@
     {{-- Phase 7 will replace this with agent-scoped field summaries --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-        @foreach ([['Assigned Fields', '—', 'blue'], ['Needing Update', '—', 'amber']] as [$label, $value, $color])
+        @foreach ([['Assigned Fields', '-', 'blue'], ['Needing Update', '-', 'amber']] as [$label, $value, $color])
             <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-4">
                 <div class="w-10 h-10 rounded-lg bg-{{ $color }}-100 flex items-center justify-center shrink-0">
                     <span class="text-{{ $color }}-600 text-lg font-bold">{{ $value }}</span>

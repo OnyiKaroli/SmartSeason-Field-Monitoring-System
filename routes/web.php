@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Routes are organized by role. The root '/' redirects authenticated users
-| to their dashboard. Public routes are minimal — registration is not open
+| to their dashboard. Public routes are minimal - registration is not open
 | to the public; the admin creates user accounts through the admin panel.
 |
 */
@@ -27,7 +27,7 @@ Route::get('/', function () {
 });
 
 // -------------------------------------------------------------------------
-// Admin routes — require auth + admin role
+// Admin routes - require auth + admin role
 // -------------------------------------------------------------------------
 Route::middleware(['auth', 'admin'])
     ->prefix('admin')
@@ -38,7 +38,14 @@ Route::middleware(['auth', 'admin'])
     });
 
 // -------------------------------------------------------------------------
-// Agent routes — require auth (any authenticated user may attempt /agent,
+// Field Management routes - require auth + admin role
+// -------------------------------------------------------------------------
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('fields', \App\Http\Controllers\FieldController::class);
+});
+
+// -------------------------------------------------------------------------
+// Agent routes - require auth (any authenticated user may attempt /agent,
 // but data is scoped to the authenticated user's assigned fields)
 // -------------------------------------------------------------------------
 Route::middleware(['auth'])
@@ -50,7 +57,7 @@ Route::middleware(['auth'])
     });
 
 // -------------------------------------------------------------------------
-// Profile (Breeze default — kept for completeness)
+// Profile (Breeze default - kept for completeness)
 // -------------------------------------------------------------------------
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

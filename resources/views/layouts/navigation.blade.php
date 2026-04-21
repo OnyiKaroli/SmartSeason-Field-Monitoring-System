@@ -38,7 +38,10 @@
                            class="text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'text-emerald-700' : 'text-gray-600 hover:text-gray-900' }} transition-colors">
                             Dashboard
                         </a>
-                        {{-- Phase 3+ links will be added here --}}
+                        <a href="{{ route('fields.index') }}"
+                           class="text-sm font-medium {{ request()->routeIs('fields.*') ? 'text-emerald-700' : 'text-gray-600 hover:text-gray-900' }} transition-colors">
+                            Fields
+                        </a>
                     @else
                         <a href="{{ route('agent.dashboard') }}"
                            class="text-sm font-medium {{ request()->routeIs('agent.dashboard') ? 'text-emerald-700' : 'text-gray-600 hover:text-gray-900' }} transition-colors">
@@ -111,6 +114,10 @@
                     <a href="{{ route('admin.dashboard') }}"
                        class="block py-2 text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'text-emerald-700' : 'text-gray-600' }}">
                         Dashboard
+                    </a>
+                    <a href="{{ route('fields.index') }}"
+                       class="block py-2 text-sm font-medium {{ request()->routeIs('fields.*') ? 'text-emerald-700' : 'text-gray-600' }}">
+                        Fields
                     </a>
                 @else
                     <a href="{{ route('agent.dashboard') }}"
