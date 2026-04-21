@@ -30,11 +30,16 @@ class FieldStatusService
             return 'Field has been harvested.';
         }
 
-        if ($this->isAtRisk($field)) {
-            $referenceDate = $field->last_observation_at ?? $field->created_at;
-            $daysSinceUpdate = (int) $referenceDate->diffInDays(now());
-            
+        $referenceDate = $field->last_observation_at ?? $field->created_at;
+        $daysSinceUpdate = (int) $referenceDate->diffInDays(now());
+
+        if ($daysSinceUpdate > 7) {
             return "No updates received in {$daysSinceUpdate} days.";
+        }
+
+        $daysSinceStageChange = (int) $field->updated_at->diffInDays(now());
+        if ($daysSinceStageChange > 45) {
+            return "Stuck in {$field->current_stage} stage for {$daysSinceStageChange} days.";
         }
 
         return 'Field is progressing normally.';
@@ -63,7 +68,15 @@ class FieldStatusService
     {
         // Stale if no update in 7 days
         $referenceDate = $field->last_observation_at ?? $field->created_at;
+        if ($referenceDate->lt(now()->subDays(7))) {
+            return true;
+        }
 
-        return $referenceDate->lt(now()->subDays(7));
+        // Also at risk if stage unchanged for too long (e.g. 45 days)
+        if ($field->updated_at->lt(now()->subDays(45))) {
+            return true;
+        }
+
+        return false;
     }
 }

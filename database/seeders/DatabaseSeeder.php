@@ -16,8 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            // Phase 3+: FieldSeeder::class,
-            // Phase 5+: FieldUpdateSeeder::class,
+            FieldSeeder::class,
         ]);
     }
 }
