@@ -67,7 +67,7 @@ Each field detail page provides a clear reason for its current status (e.g., "No
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:OnyiKaroli/SmartSeason-Field-Monitoring-System.git
    cd SmartSeason-Field-Monitoring-System
    ```
 
