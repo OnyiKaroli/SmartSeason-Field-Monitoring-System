@@ -42,6 +42,17 @@
                             <x-input-error :messages="$errors->get('current_stage')" class="mt-2" />
                         </div>
 
+                        <div class="mb-4">
+                            <x-input-label for="assigned_agent_id" value="Assign Field Agent (Optional)" />
+                            <select id="assigned_agent_id" name="assigned_agent_id" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <option value="">Unassigned</option>
+                                @foreach($fieldAgents as $agent)
+                                    <option value="{{ $agent->id }}" {{ old('assigned_agent_id') == $agent->id ? 'selected' : '' }}>{{ $agent->name }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('assigned_agent_id')" class="mt-2" />
+                        </div>
+
                         <div class="flex items-center justify-end mt-4">
                             <a class="text-sm text-gray-600 hover:text-gray-900 mr-4" href="{{ route('fields.index') }}">
                                 Cancel

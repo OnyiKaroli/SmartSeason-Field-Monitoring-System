@@ -24,7 +24,8 @@ class FieldController extends Controller
      */
     public function create()
     {
-        return view('fields.create');
+        $fieldAgents = \App\Models\User::where('role', 'field_agent')->orderBy('name')->get();
+        return view('fields.create', compact('fieldAgents'));
     }
 
     /**
@@ -56,7 +57,8 @@ class FieldController extends Controller
      */
     public function edit(Field $field)
     {
-        return view('fields.edit', compact('field'));
+        $fieldAgents = \App\Models\User::where('role', 'field_agent')->orderBy('name')->get();
+        return view('fields.edit', compact('field', 'fieldAgents'));
     }
 
     /**

@@ -27,6 +27,12 @@ class StoreFieldRequest extends FormRequest
             'crop_type' => ['required', 'string', 'max:255'],
             'planting_date' => ['required', 'date', 'before_or_equal:today'],
             'current_stage' => ['nullable', 'string', 'in:Planted,Growing,Ready,Harvested'],
+            'assigned_agent_id' => [
+                'nullable',
+                \Illuminate\Validation\Rule::exists('users', 'id')->where(function ($query) {
+                    $query->where('role', 'field_agent');
+                }),
+            ],
         ];
     }
 }
