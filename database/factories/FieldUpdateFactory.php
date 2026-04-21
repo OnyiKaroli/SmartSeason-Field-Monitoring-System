@@ -26,7 +26,7 @@ class FieldUpdateFactory extends Factory
             'updated_by' => User::factory(),
             'previous_stage' => 'Planted',
             'new_stage' => 'Growing',
-            'note' => $this->faker->sentence(),
+            'note' => \fake()->sentence(),
             'observed_at' => now(),
         ];
     }
