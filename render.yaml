@@ -17,7 +17,12 @@ services:
         fromService:
           type: web
           name: smartseason-app
-          property: host
+          property: url
+      - key: ASSET_URL
+        fromService:
+          type: web
+          name: smartseason-app
+          property: url
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -57,6 +62,11 @@ services:
         value: production
       - key: APP_KEY
         sync: false
+      - key: APP_URL
+        fromService:
+          type: web
+          name: smartseason-app
+          property: url
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
