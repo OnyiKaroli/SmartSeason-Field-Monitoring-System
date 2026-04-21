@@ -15,8 +15,13 @@ class AdminDashboardController extends Controller
     {
         $stats = [
             'total_fields' => \App\Models\Field::count(),
-            'active_fields' => \App\Models\Field::where('current_stage', '!=', 'Harvested')->count(),
-            'at_risk' => 0, // Placeholder until Phase 6 logic is implemented
+            'completed_fields' => \App\Models\Field::where('current_stage', 'Harvested')->count(),
+            'at_risk' => \App\Models\Field::where('current_stage', '!=', 'Harvested')
+                ->where('updated_at', '<', now()->subDays(7))
+                ->count(),
+            'active_fields' => \App\Models\Field::where('current_stage', '!=', 'Harvested')
+                ->where('updated_at', '>=', now()->subDays(7))
+                ->count(),
         ];
 
         $recentUpdates = \App\Models\FieldUpdate::with(['field', 'updater'])

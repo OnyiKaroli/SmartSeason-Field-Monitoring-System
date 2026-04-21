@@ -13,7 +13,15 @@ class AgentDashboardController extends Controller
      */
     public function index(): View
     {
-        $fields = auth()->user()->assignedFields()->with(['creator'])->latest()->get();
-        return view('agent.dashboard', compact('fields'));
+        $user = auth()->user();
+        $fields = $user->assignedFields()->with(['creator'])->latest()->get();
+        
+        $stats = [
+            'total_assigned' => $fields->count(),
+            'active' => $fields->where('status', 'Active')->count(),
+            'at_risk' => $fields->where('status', 'At Risk')->count(),
+        ];
+
+        return view('agent.dashboard', compact('fields', 'stats'));
     }
 }

@@ -11,26 +11,35 @@
     </x-slot>
 
     {{-- Phase 7 will replace this with agent-scoped field summaries --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-4">
             <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                <span class="text-blue-600 text-lg font-bold">{{ $fields->count() }}</span>
+                <span class="text-blue-600 text-lg font-bold">{{ $stats['total_assigned'] }}</span>
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Assigned Fields</p>
-                <p class="text-2xl font-semibold text-gray-800 mt-1">{{ $fields->count() }}</p>
+                <p class="text-2xl font-semibold text-gray-800 mt-1">{{ $stats['total_assigned'] }}</p>
             </div>
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-4">
-            <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
-                {{-- Placeholder logic for 'Needing Update' - maybe non-harvested? --}}
-                <span class="text-amber-600 text-lg font-bold">{{ $fields->where('current_stage', '!=', 'Harvested')->count() }}</span>
+            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <span class="text-green-600 text-lg font-bold">{{ $stats['active'] }}</span>
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Active Fields</p>
-                <p class="text-2xl font-semibold text-gray-800 mt-1">{{ $fields->where('current_stage', '!=', 'Harvested')->count() }}</p>
+                <p class="text-2xl font-semibold text-gray-800 mt-1">{{ $stats['active'] }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+                <span class="text-red-600 text-lg font-bold">{{ $stats['at_risk'] }}</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">At Risk</p>
+                <p class="text-2xl font-semibold text-gray-800 mt-1">{{ $stats['at_risk'] }}</p>
             </div>
         </div>
 
@@ -55,6 +64,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field Name</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -71,6 +81,15 @@
                                         {{ $field->current_stage === 'Harvested' ? 'bg-gray-100 text-gray-800' : '' }}
                                     ">
                                         {{ $field->current_stage }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        {{ $field->status === 'Active' ? 'bg-green-100 text-green-800' : '' }}
+                                        {{ $field->status === 'At Risk' ? 'bg-red-100 text-red-800' : '' }}
+                                        {{ $field->status === 'Completed' ? 'bg-blue-100 text-blue-800' : '' }}
+                                    ">
+                                        {{ $field->status }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

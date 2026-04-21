@@ -43,6 +43,16 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                <span class="text-gray-600 text-lg font-bold">{{ $stats['completed_fields'] }}</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">Completed</p>
+                <p class="text-2xl font-semibold text-gray-800 mt-1">{{ $stats['completed_fields'] }}</p>
+            </div>
+        </div>
+
     </div>
 
     <div class="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">

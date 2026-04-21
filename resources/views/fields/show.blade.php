@@ -63,6 +63,22 @@
                                         </span>
                                     </dd>
                                 </div>
+                                <div class="sm:col-span-1">
+                                    <dt class="text-sm font-medium text-gray-500">Computed Status</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            {{ $field->status === 'Active' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $field->status === 'At Risk' ? 'bg-red-100 text-red-800' : '' }}
+                                            {{ $field->status === 'Completed' ? 'bg-blue-100 text-blue-800' : '' }}
+                                        ">
+                                            {{ $field->status }}
+                                        </span>
+                                    </dd>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">Status Reason</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 italic">{{ $field->status_reason }}</dd>
+                                </div>
                             </dl>
                         </div>
                         
