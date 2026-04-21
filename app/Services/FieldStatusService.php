@@ -31,10 +31,8 @@ class FieldStatusService
         }
 
         if ($this->isAtRisk($field)) {
-            $lastUpdate = $field->updates()->first();
-            $daysSinceUpdate = $lastUpdate 
-                ? (int) $lastUpdate->created_at->diffInDays(now()) 
-                : (int) $field->created_at->diffInDays(now());
+            $referenceDate = $field->last_observation_at ?? $field->created_at;
+            $daysSinceUpdate = (int) $referenceDate->diffInDays(now());
             
             return "No updates received in {$daysSinceUpdate} days.";
         }
@@ -42,11 +40,29 @@ class FieldStatusService
         return 'Field is progressing normally.';
     }
 
+    public function needsAttention(Field $field): bool
+    {
+        if ($field->current_stage === 'Harvested') {
+            return false;
+        }
+
+        // Needs attention if at risk (no update in 7 days)
+        if ($this->isAtRisk($field)) {
+            return true;
+        }
+
+        // Needs attention if stage unchanged for too long (e.g. 30 days)
+        if ($field->updated_at->lt(now()->subDays(30))) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function isAtRisk(Field $field): bool
     {
         // Stale if no update in 7 days
-        $lastUpdate = $field->updates()->first();
-        $referenceDate = $lastUpdate ? $lastUpdate->created_at : $field->created_at;
+        $referenceDate = $field->last_observation_at ?? $field->created_at;
 
         return $referenceDate->lt(now()->subDays(7));
     }

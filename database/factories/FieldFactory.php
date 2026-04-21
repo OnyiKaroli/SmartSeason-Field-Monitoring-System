@@ -22,6 +22,7 @@ class FieldFactory extends Factory
             'crop_type' => fake()->randomElement(['Corn', 'Wheat', 'Soybeans', 'Cotton']),
             'planting_date' => fake()->dateTimeBetween('-3 months', 'now')->format('Y-m-d'),
             'current_stage' => fake()->randomElement(['Planted', 'Growing', 'Ready', 'Harvested']),
+            'last_observation_at' => null,
             'assigned_agent_id' => null,
             'created_by' => null,
         ];

@@ -15,12 +15,14 @@ class Field extends Model
         'crop_type',
         'planting_date',
         'current_stage',
+        'last_observation_at',
         'assigned_agent_id',
         'created_by',
     ];
 
     protected $casts = [
         'planting_date' => 'date',
+        'last_observation_at' => 'datetime',
     ];
 
     public const STAGES = [
@@ -53,5 +55,10 @@ class Field extends Model
     public function getStatusReasonAttribute(): string
     {
         return app(\App\Services\FieldStatusService::class)->getStatusReason($this);
+    }
+    
+    public function getNeedsAttentionAttribute(): bool
+    {
+        return app(\App\Services\FieldStatusService::class)->needsAttention($this);
     }
 }

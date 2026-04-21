@@ -23,6 +23,7 @@ class FieldUpdateController extends Controller
 
         $field->update([
             'current_stage' => $request->new_stage,
+            'last_observation_at' => $request->observed_at,
         ]);
 
         return redirect()->route('fields.show', $field)

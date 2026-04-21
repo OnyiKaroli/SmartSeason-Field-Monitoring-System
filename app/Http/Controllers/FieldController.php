@@ -13,7 +13,7 @@ class FieldController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Field::with(['assignedAgent', 'creator']);
 
@@ -21,8 +21,51 @@ class FieldController extends Controller
             $query->where('assigned_agent_id', auth()->id());
         }
 
-        $fields = $query->latest()->paginate(10);
-        return view('fields.index', compact('fields'));
+        // Filtering
+        if ($request->filled('stage')) {
+            $query->where('current_stage', $request->stage);
+        }
+
+        if ($request->filled('crop_type')) {
+            $query->where('crop_type', 'like', '%' . $request->crop_type . '%');
+        }
+
+        if ($request->filled('agent_id') && auth()->user()->isAdmin()) {
+            $query->where('assigned_agent_id', $request->agent_id);
+        }
+
+        if ($request->filled('status')) {
+            $status = $request->status;
+            if ($status === \App\Services\FieldStatusService::STATUS_COMPLETED) {
+                $query->where('current_stage', 'Harvested');
+            } elseif ($status === \App\Services\FieldStatusService::STATUS_AT_RISK) {
+                $query->where('current_stage', '!=', 'Harvested')
+                    ->where(function ($q) {
+                        $q->whereNull('last_observation_at')
+                            ->where('created_at', '<', now()->subDays(7))
+                            ->orWhere('last_observation_at', '<', now()->subDays(7));
+                    });
+            } elseif ($status === \App\Services\FieldStatusService::STATUS_ACTIVE) {
+                $query->where('current_stage', '!=', 'Harvested')
+                    ->where(function ($q) {
+                        $q->where(function ($sq) {
+                            $sq->whereNotNull('last_observation_at')
+                                ->where('last_observation_at', '>=', now()->subDays(7));
+                        })->orWhere(function ($sq) {
+                            $sq->whereNull('last_observation_at')
+                                ->where('created_at', '>=', now()->subDays(7));
+                        });
+                    });
+            }
+        }
+
+        $fields = $query->latest()->paginate(10)->withQueryString();
+        
+        $fieldAgents = auth()->user()->isAdmin() 
+            ? \App\Models\User::where('role', 'field_agent')->orderBy('name')->get()
+            : collect();
+
+        return view('fields.index', compact('fields', 'fieldAgents'));
     }
 
     /**
