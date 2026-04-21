@@ -36,7 +36,7 @@ If you prefer to set up services manually:
 4.  Add the following Environment Variables in the **Env** tab:
     - `APP_ENV`: `production`
     - `APP_DEBUG`: `false`
-    - `APP_KEY`: (Generate one using `php artisan key:generate --show` or Render's generate button)
+    - `APP_KEY`: **CRITICAL**: Run `php artisan key:generate --show` locally and paste the `base64:...` string here. Do NOT use Render's default generate button as it creates incompatible keys.
     - `DB_CONNECTION`: `pgsql`
     - `DB_HOST`: (Your database host)
     - `DB_PORT`: `5432`
@@ -76,4 +76,5 @@ If you are on the free tier, you can use [cron-job.org](https://cron-job.org/) t
 ## Troubleshooting
 
 - **Logs**: Check the **Logs** tab in the Render Dashboard for any startup errors.
+- **APP_KEY Error**: If you see `Unsupported cipher or incorrect key length`, it means your `APP_KEY` is invalid. Ensure it starts with `base64:` and was generated using `php artisan key:generate`.
 - **Environment**: Ensure all required environment variables are set. If you added new variables to `.env.example`, make sure to add them to Render as well.
