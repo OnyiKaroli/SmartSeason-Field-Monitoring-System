@@ -17,13 +17,11 @@ class FieldFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = \Faker\Factory::create();
-
         return [
-            'name' => $faker->word() . ' Field',
-            'crop_type' => $faker->randomElement(['Corn', 'Wheat', 'Soybeans', 'Cotton']),
-            'planting_date' => $faker->dateTimeBetween('-3 months', 'now')->format('Y-m-d'),
-            'current_stage' => $faker->randomElement(['Planted', 'Growing', 'Ready', 'Harvested']),
+            'name' => \fake()->word() . ' Field',
+            'crop_type' => \fake()->randomElement(['Corn', 'Wheat', 'Soybeans', 'Cotton']),
+            'planting_date' => \fake()->dateTimeBetween('-3 months', 'now')->format('Y-m-d'),
+            'current_stage' => \fake()->randomElement(['Planted', 'Growing', 'Ready', 'Harvested']),
             'last_observation_at' => null,
             'assigned_agent_id' => null,
             'created_by' => null,

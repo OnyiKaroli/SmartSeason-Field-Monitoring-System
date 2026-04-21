@@ -189,23 +189,42 @@ class FieldSeeder extends Seeder
             ]
         );
 
-        // 6. RANDOM EXTRA FIELDS (using factory)
+        // 6. RANDOM EXTRA FIELDS (Manual to avoid Faker dependency in production)
         if (Field::count() < 10) {
-            Field::factory()->count(5)->create([
-                'created_by' => $admin->id,
-            ])->each(function ($field) use ($agent1, $agent2) {
-                $field->update(['assigned_agent_id' => rand(0, 1) ? $agent1->id : $agent2->id]);
-                
-                // Add a random update
-                FieldUpdate::create([
-                    'field_id' => $field->id,
-                    'updated_by' => $field->assigned_agent_id,
-                    'previous_stage' => 'Planted',
-                    'new_stage' => $field->current_stage,
-                    'note' => 'Initial seeded observation.',
-                    'observed_at' => Carbon::parse($field->planting_date)->addDays(5),
-                ]);
-            });
+            $extraFields = [
+                ['name' => 'Southern Plains Rice', 'crop' => 'Rice'],
+                ['name' => 'Hillside Vineyards', 'crop' => 'Grapes'],
+                ['name' => 'Coastal Citrus Grove', 'crop' => 'Oranges'],
+                ['name' => 'Highland Potato Farm', 'crop' => 'Potatoes'],
+                ['name' => 'Delta Cotton Field', 'crop' => 'Cotton'],
+            ];
+
+            foreach ($extraFields as $data) {
+                $field = Field::updateOrCreate(
+                    ['name' => $data['name']],
+                    [
+                        'crop_type' => $data['crop'],
+                        'planting_date' => Carbon::now()->subDays(rand(10, 100))->format('Y-m-d'),
+                        'current_stage' => 'Growing',
+                        'assigned_agent_id' => rand(0, 1) ? $agent1->id : $agent2->id,
+                        'created_by' => $admin->id,
+                        'last_observation_at' => Carbon::now()->subDays(rand(1, 5)),
+                    ]
+                );
+
+                FieldUpdate::updateOrCreate(
+                    [
+                        'field_id' => $field->id,
+                        'observed_at' => Carbon::parse($field->planting_date)->addDays(5)->startOfDay(),
+                    ],
+                    [
+                        'updated_by' => $field->assigned_agent_id,
+                        'previous_stage' => 'Planted',
+                        'new_stage' => 'Growing',
+                        'note' => 'Initial seeded observation.',
+                    ]
+                );
+            }
         }
     }
 }

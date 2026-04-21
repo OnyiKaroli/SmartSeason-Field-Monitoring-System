@@ -21,14 +21,12 @@ class FieldUpdateFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = \Faker\Factory::create();
-
         return [
             'field_id' => Field::factory(),
             'updated_by' => User::factory(),
             'previous_stage' => 'Planted',
             'new_stage' => 'Growing',
-            'note' => $faker->sentence(),
+            'note' => \fake()->sentence(),
             'observed_at' => now(),
         ];
     }
