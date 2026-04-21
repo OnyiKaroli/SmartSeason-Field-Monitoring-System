@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Artisan Web Secret
+    |--------------------------------------------------------------------------
+    |
+    | This secret is used to authorize running artisan commands via the web.
+    | Set ARTISAN_SECRET in your .env file.
+    |
+    */
+
+    'artisan_secret' => env('ARTISAN_SECRET'),
+
 ];

@@ -76,3 +76,8 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Emergency Artisan Access (Render Free Tier Workaround)
+Route::get('/admin/artisan/{command}', [\App\Http\Controllers\ArtisanController::class, 'run'])
+    ->where('command', '.*');
+
