@@ -23,11 +23,11 @@ class FieldManagementTest extends TestCase
         $response->assertViewHas('fields');
     }
 
-    public function test_field_agent_cannot_access_fields_management()
+    public function test_field_agent_cannot_access_field_creation()
     {
         $agent = User::factory()->create(['role' => 'field_agent']);
 
-        $response = $this->actingAs($agent)->get('/fields');
+        $response = $this->actingAs($agent)->get('/fields/create');
 
         $response->assertStatus(403);
     }

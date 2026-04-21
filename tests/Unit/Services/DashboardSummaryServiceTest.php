@@ -30,17 +30,25 @@ class DashboardSummaryServiceTest extends TestCase
         Field::factory()->create(['current_stage' => 'Harvested']);
         
         // 1 At Risk (Old update)
-        $atRiskField = Field::factory()->create(['current_stage' => 'Growing']);
+        $atRiskField = Field::factory()->create([
+            'current_stage' => 'Growing',
+            'last_observation_at' => now()->subDays(10)
+        ]);
         FieldUpdate::factory()->create([
             'field_id' => $atRiskField->id,
-            'created_at' => now()->subDays(10)
+            'created_at' => now()->subDays(10),
+            'observed_at' => now()->subDays(10)
         ]);
 
         // 1 Active (Recent update)
-        $activeField = Field::factory()->create(['current_stage' => 'Planted']);
+        $activeField = Field::factory()->create([
+            'current_stage' => 'Planted',
+            'last_observation_at' => now()->subDays(1)
+        ]);
         FieldUpdate::factory()->create([
             'field_id' => $activeField->id,
-            'created_at' => now()->subDays(1)
+            'created_at' => now()->subDays(1),
+            'observed_at' => now()->subDays(1)
         ]);
 
         $summary = $this->service->getAdminSummary();
@@ -59,16 +67,19 @@ class DashboardSummaryServiceTest extends TestCase
         // Assigned fields
         Field::factory()->create([
             'assigned_agent_id' => $agent->id,
-            'current_stage' => 'Planted'
+            'current_stage' => 'Planted',
+            'last_observation_at' => now()->subDays(1)
         ]);
         
         $atRiskField = Field::factory()->create([
             'assigned_agent_id' => $agent->id,
-            'current_stage' => 'Growing'
+            'current_stage' => 'Growing',
+            'last_observation_at' => now()->subDays(10)
         ]);
         FieldUpdate::factory()->create([
             'field_id' => $atRiskField->id,
-            'created_at' => now()->subDays(10)
+            'created_at' => now()->subDays(10),
+            'observed_at' => now()->subDays(10)
         ]);
 
         // Unassigned field (should not be in agent summary)
