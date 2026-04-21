@@ -53,6 +53,26 @@ If you prefer to set up services manually:
   php artisan db:seed --force
   ```
 
+## Preventing Spin-Down (Free Tier)
+
+Render's free tier web services spin down after 15 minutes of inactivity. To keep your service active 24/7:
+
+1.  **Use an External Pinger**: Use a free service like [cron-job.org](https://cron-job.org/) or [UptimeRobot](https://uptimerobot.com/).
+2.  **Configure the Ping**: Set up a job to send an HTTP GET request to `https://your-app.onrender.com/up` every 10-14 minutes.
+3.  **Path**: Use the `/up` path, which is a lightweight health check built into Laravel.
+
+## Laravel Task Scheduling (Cron Job)
+
+Laravel requires a cron job to run every minute to handle scheduled tasks.
+
+### Option 1: Render Cron Job (Paid)
+If you are on a paid plan, the `render.yaml` file already includes a Cron Job service definition. It will run `php artisan schedule:run` every minute.
+
+### Option 2: External Trigger (Free)
+If you are on the free tier, you can use [cron-job.org](https://cron-job.org/) to trigger a secret URL every minute.
+1. Create a route in `routes/console.php` or a dedicated web route that runs the scheduler.
+2. **Note**: This is less secure and recommended only for development.
+
 ## Troubleshooting
 
 - **Logs**: Check the **Logs** tab in the Render Dashboard for any startup errors.
