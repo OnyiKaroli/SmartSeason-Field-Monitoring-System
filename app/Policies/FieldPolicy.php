@@ -13,7 +13,7 @@ class FieldPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true; // Both admins and agents can view fields (agents see filtered list)
     }
 
     /**
@@ -21,7 +21,11 @@ class FieldPolicy
      */
     public function view(User $user, Field $field): bool
     {
-        return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $field->assigned_agent_id === $user->id;
     }
 
     /**
@@ -29,7 +33,7 @@ class FieldPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +41,7 @@ class FieldPolicy
      */
     public function update(User $user, Field $field): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -45,22 +49,26 @@ class FieldPolicy
      */
     public function delete(User $user, Field $field): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can assign a field.
      */
-    public function restore(User $user, Field $field): bool
+    public function assign(User $user): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can update the status of a field.
      */
-    public function forceDelete(User $user, Field $field): bool
+    public function updateStatus(User $user, Field $field): bool
     {
-        return false;
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isFieldAgent() && $field->assigned_agent_id === $user->id;
     }
 }

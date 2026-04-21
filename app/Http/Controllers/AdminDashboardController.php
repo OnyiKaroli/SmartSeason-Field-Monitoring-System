@@ -13,6 +13,17 @@ class AdminDashboardController extends Controller
      */
     public function index(): View
     {
-        return view('admin.dashboard');
+        $stats = [
+            'total_fields' => \App\Models\Field::count(),
+            'active_fields' => \App\Models\Field::where('current_stage', '!=', 'Harvested')->count(),
+            'at_risk' => 0, // Placeholder until Phase 6 logic is implemented
+        ];
+
+        $recentUpdates = \App\Models\FieldUpdate::with(['field', 'updater'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentUpdates'));
     }
 }

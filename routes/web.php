@@ -38,10 +38,20 @@ Route::middleware(['auth', 'admin'])
     });
 
 // -------------------------------------------------------------------------
-// Field Management routes - require auth + admin role
+// Field Management & View routes
 // -------------------------------------------------------------------------
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('fields', \App\Http\Controllers\FieldController::class);
+Route::middleware(['auth'])->group(function () {
+    // Only admins can create, edit, or delete fields
+    Route::middleware(['admin'])->group(function () {
+        Route::resource('fields', \App\Http\Controllers\FieldController::class)->except(['index', 'show']);
+    });
+
+    // Both admins and agents can view fields
+    Route::resource('fields', \App\Http\Controllers\FieldController::class)->only(['index', 'show']);
+
+    // Field updates
+    Route::post('/fields/{field}/updates', [\App\Http\Controllers\FieldUpdateController::class, 'store'])
+        ->name('fields.updates.store');
 });
 
 // -------------------------------------------------------------------------

@@ -13,6 +13,7 @@ class AgentDashboardController extends Controller
      */
     public function index(): View
     {
-        return view('agent.dashboard');
+        $fields = auth()->user()->assignedFields()->with(['creator'])->latest()->get();
+        return view('agent.dashboard', compact('fields'));
     }
 }

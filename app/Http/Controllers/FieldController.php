@@ -15,7 +15,13 @@ class FieldController extends Controller
      */
     public function index()
     {
-        $fields = Field::with(['assignedAgent', 'creator'])->latest()->paginate(10);
+        $query = Field::with(['assignedAgent', 'creator']);
+
+        if (!auth()->user()->isAdmin()) {
+            $query->where('assigned_agent_id', auth()->id());
+        }
+
+        $fields = $query->latest()->paginate(10);
         return view('fields.index', compact('fields'));
     }
 
@@ -24,6 +30,7 @@ class FieldController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Field::class);
         $fieldAgents = \App\Models\User::where('role', 'field_agent')->orderBy('name')->get();
         return view('fields.create', compact('fieldAgents'));
     }
@@ -48,7 +55,8 @@ class FieldController extends Controller
      */
     public function show(Field $field)
     {
-        $field->load(['assignedAgent', 'creator']);
+        $this->authorize('view', $field);
+        $field->load(['assignedAgent', 'creator', 'updates.updater']);
         return view('fields.show', compact('field'));
     }
 
@@ -57,6 +65,7 @@ class FieldController extends Controller
      */
     public function edit(Field $field)
     {
+        $this->authorize('update', $field);
         $fieldAgents = \App\Models\User::where('role', 'field_agent')->orderBy('name')->get();
         return view('fields.edit', compact('field', 'fieldAgents'));
     }
@@ -66,6 +75,7 @@ class FieldController extends Controller
      */
     public function update(UpdateFieldRequest $request, Field $field)
     {
+        $this->authorize('update', $field);
         $field->update($request->validated());
 
         return redirect()->route('fields.show', $field)
@@ -77,6 +87,7 @@ class FieldController extends Controller
      */
     public function destroy(Field $field)
     {
+        $this->authorize('delete', $field);
         $field->delete();
 
         return redirect()->route('fields.index')

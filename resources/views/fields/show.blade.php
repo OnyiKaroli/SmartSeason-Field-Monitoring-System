@@ -4,6 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Field Details') }}: {{ $field->name }}
             </h2>
+            @can('update', $field)
             <div>
                 <a href="{{ route('fields.edit', $field) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 mr-2">
                     Edit
@@ -16,6 +17,7 @@
                     </button>
                 </form>
             </div>
+            @endcan
         </div>
     </x-slot>
 
@@ -92,6 +94,92 @@
                             &larr; Back to Fields
                         </a>
                     </div>
+                </div>
+            </div>
+
+            @can('updateStatus', $field)
+            <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Submit Stage Update</h3>
+                    <form action="{{ route('fields.updates.store', $field) }}" method="POST">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <x-input-label for="new_stage" :value="__('New Stage')" />
+                                <select id="new_stage" name="new_stage" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                    @foreach(\App\Models\Field::STAGES as $stage)
+                                        <option value="{{ $stage }}" {{ $field->current_stage === $stage ? 'selected' : '' }}>
+                                            {{ $stage }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('new_stage')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="observed_at" :value="__('Observation Date')" />
+                                <x-text-input id="observed_at" class="block mt-1 w-full" type="datetime-local" name="observed_at" :value="old('observed_at', now()->format('Y-m-d\TH:i'))" required />
+                                <x-input-error :messages="$errors->get('observed_at')" class="mt-2" />
+                            </div>
+                            <div class="md:col-span-3">
+                                <x-input-label for="note" :value="__('Notes / Observations')" />
+                                <textarea id="note" name="note" rows="3" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" placeholder="Describe the field condition...">{{ old('note') }}</textarea>
+                                <x-input-error :messages="$errors->get('note')" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <x-primary-button>
+                                {{ __('Submit Update') }}
+                            </x-primary-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @endcan
+
+            <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Activity Timeline</h3>
+                    @if($field->updates->count() > 0)
+                        <div class="flow-root">
+                            <ul role="list" class="-mb-8">
+                                @foreach($field->updates as $update)
+                                <li>
+                                    <div class="relative pb-8">
+                                        @if(!$loop->last)
+                                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        @endif
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                                    <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">
+                                                        Stage changed from <span class="font-medium text-gray-900">{{ $update->previous_stage ?? 'None' }}</span> to <span class="font-medium text-gray-900">{{ $update->new_stage }}</span> by <span class="font-medium text-gray-900">{{ $update->updater->name }}</span>
+                                                    </p>
+                                                    @if($update->note)
+                                                        <div class="mt-2 text-sm text-gray-700 italic">
+                                                            "{{ $update->note }}"
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="whitespace-nowrap text-right text-sm text-gray-500">
+                                                    <time datetime="{{ $update->observed_at }}">{{ $update->observed_at->format('M j, Y H:i') }}</time>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-500">No activity recorded yet.</p>
+                    @endif
                 </div>
             </div>
         </div>

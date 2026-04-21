@@ -23,6 +23,13 @@ class Field extends Model
         'planting_date' => 'date',
     ];
 
+    public const STAGES = [
+        'Planted',
+        'Growing',
+        'Ready',
+        'Harvested',
+    ];
+
     public function assignedAgent()
     {
         return $this->belongsTo(User::class, 'assigned_agent_id');
@@ -31,5 +38,10 @@ class Field extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updates()
+    {
+        return $this->hasMany(FieldUpdate::class)->latest();
     }
 }
