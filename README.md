@@ -1,58 +1,126 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SmartSeason Field Monitoring System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+SmartSeason is a streamlined field monitoring system designed to help agricultural coordinators and field agents track crop progress throughout the growing season. This system demonstrates a disciplined approach to full-stack development, featuring role-based access control, automated field status computation, and a polished user interface.
 
-## About Laravel
+## 🚀 Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The primary goal of SmartSeason is to bridge the gap between field observations and management oversight. Agricultural coordinators (Admins) can manage fields and assign them to agents, while Field Agents provide real-time updates and observations directly from the field.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Role-Based Access Control**: Strict separation between Admin and Field Agent capabilities.
+- **Field Management**: Full CRUD lifecycle for fields, including assignment workflows.
+- **Progress Tracking**: Real-time stage updates (Planted, Growing, Ready, Harvested) with detailed observations and history.
+- **Computed Field Status**: Automated assessment of field health (Active, At Risk, Completed) based on activity and stage progression.
+- **Dynamic Dashboards**: Role-specific insights for both Admins (global overview) and Agents (assigned focus).
+- **Activity Timeline**: Complete chronological history of updates for every field.
+- **Filtering & Search**: Robust tools to find fields by status, stage, crop type, or assigned agent.
 
-## Learning Laravel
+## 🛠 Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Framework**: [Laravel 11](https://laravel.com)
+- **Database**: [SQLite](https://www.sqlite.org) (chosen for portability and ease of review)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com) with [Laravel Blade](https://laravel.com/docs/blade)
+- **Authentication**: [Laravel Breeze](https://laravel.com/docs/starter-kits) (customized for role-based logic)
+- **Testing**: [PHPUnit](https://phpunit.de) (Feature & Unit tests)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 👥 System Roles
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Admin (Coordinator)
+- Full visibility across all fields in the system.
+- Can create, edit, and delete field records.
+- Responsible for assigning fields to Field Agents.
+- Access to a global dashboard showing system-wide statistics and agent activity.
 
-## Agentic Development
+### Field Agent
+- Focused view showing only assigned fields.
+- Authorized to submit stage updates and notes for their assigned fields.
+- Access to a personalized dashboard highlighting fields that need immediate attention.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 🧠 Field Status Logic
+
+The status of a field is automatically computed based on the following business rules:
+
+- **Completed**: The field's current stage is set to **Harvested**.
+- **At Risk**: The field is not harvested and meets any of the following criteria:
+    - No updates or observations have been recorded in more than **7 days**.
+    - The field has remained in the same stage for more than **45 days** (indicating potential stagnation).
+- **Active**: All other fields that are not harvested and are receiving regular updates.
+
+Each field detail page provides a clear reason for its current status (e.g., "No updates received in 9 days").
+
+## 📐 Design Decisions & Assumptions
+
+1. **SQLite for Portability**: I chose SQLite to ensure the project can be run immediately by a reviewer without configuring a full MySQL/PostgreSQL server.
+2. **Computed vs. Cached Status**: Field status is computed on-the-fly to ensure it always reflects the latest business rules, rather than relying on manual updates or brittle database triggers.
+3. **Internal Assignment**: It is assumed that only Admins can assign fields, and only users with the `field_agent` role can be assigned.
+4. **Registration**: While default registration routes exist, the intended flow is for Admins to manage user accounts. New users default to the `field_agent` role.
+
+## ⚙️ Setup Instructions
+
+### Prerequisites
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+
+### Installation Steps
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd SmartSeason-Field-Monitoring-System
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   composer install
+   npm install
+   npm run build
+   ```
+
+3. **Environment Setup**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Database Configuration**:
+   The project is pre-configured to use SQLite. Ensure an empty database file exists:
+   ```bash
+   touch database/database.sqlite
+   ```
+
+5. **Run Migrations & Seeders**:
+   This will set up the schema and populate the system with realistic demo data.
+   ```bash
+   php artisan migrate --seed
+   ```
+
+## 🧪 Running Tests
+
+The project includes a comprehensive suite of unit and feature tests.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+# Run all tests
+php artisan test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Tests cover:
+- **Unit**: Field Status Logic, Dashboard Calculations, Policy Rules.
+- **Feature**: Authentication, Field CRUD, Role-based Access, Update Submissions.
 
-## Contributing
+## 🔐 Demo Credentials
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Use these accounts to explore the system:
 
-## Code of Conduct
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@smartseason.test` | `password` |
+| **Field Agent** | `agent1@smartseason.test` | `password` |
+| **Field Agent** | `agent2@smartseason.test` | `password` |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📈 Trade-offs & Future Improvements
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Scalability**: For a production system with thousands of fields, I would migrate to MySQL/PostgreSQL and implement status caching with scheduled invalidation.
+- **Mobile App**: While the UI is responsive, a dedicated mobile app using Flutter or React Native would provide better offline support for agents in remote fields.
+- **Geospatial Data**: Adding GIS coordinates and map views would enhance the "Field Monitoring" aspect significantly.
