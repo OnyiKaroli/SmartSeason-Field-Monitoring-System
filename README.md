@@ -6,13 +6,21 @@ SmartSeason is a streamlined field monitoring system designed to help agricultur
 
 The primary goal of SmartSeason is to bridge the gap between field observations and management oversight. Agricultural coordinators (Admins) can manage fields and assign them to agents, while Field Agents provide real-time updates and observations directly from the field.
 
+## 🌐 Live Demo
+
+The application is deployed and available for review at: [https://smartseason-app.onrender.com](https://smartseason-app.onrender.com)
+
+*Note: The app is hosted on a free tier and may take a few seconds to wake up on the first load.*
+
 ## ✨ Features
 
 - **Role-Based Access Control**: Strict separation between Admin and Field Agent capabilities.
 - **Field Management**: Full CRUD lifecycle for fields, including assignment workflows.
 - **Progress Tracking**: Real-time stage updates (Planted, Growing, Ready, Harvested) with detailed observations and history.
 - **Computed Field Status**: Automated assessment of field health (Active, At Risk, Completed) based on activity and stage progression.
-- **Dynamic Dashboards**: Role-specific insights for both Admins (global overview) and Agents (assigned focus).
+- **Dynamic Dashboards**:
+  - Admin: total fields, status breakdown, stage distribution, and agent activity
+  - Agent: assigned fields, fields needing attention, and recent updates
 - **Activity Timeline**: Complete chronological history of updates for every field.
 - **Filtering & Search**: Robust tools to find fields by status, stage, crop type, or assigned agent.
 
@@ -96,6 +104,11 @@ Each field detail page provides a clear reason for its current status (e.g., "No
    php artisan migrate --seed
    ```
 
+6. **Start the development server**:
+   ```bash
+   php artisan serve
+   ```
+
 ## 🧪 Running Tests
 
 The project includes a comprehensive suite of unit and feature tests.
@@ -106,8 +119,8 @@ php artisan test
 ```
 
 Tests cover:
-- **Unit**: Field Status Logic, Dashboard Calculations, Policy Rules.
-- **Feature**: Authentication, Field CRUD, Role-based Access, Update Submissions.
+- Unit Tests: Field status computation, risk detection rules, and policy logic
+- Feature Tests: Authentication, field CRUD, role-based access control, assignment workflows, and update submissions
 
 ## 🔐 Demo Credentials
 
