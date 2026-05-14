@@ -27,7 +27,7 @@ The application is deployed and available for review at: [https://smartseason-ap
 ## 🛠 Tech Stack
 
 - **Framework**: [Laravel 11](https://laravel.com)
-- **Database**: [SQLite](https://www.sqlite.org) (chosen for portability and ease of review)
+- **Database**: [SQLite](https://www.sqlite.org) (Local) / [PostgreSQL](https://www.postgresql.org) (Production)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com) with [Laravel Blade](https://laravel.com/docs/blade)
 - **Authentication**: [Laravel Breeze](https://laravel.com/docs/starter-kits) (customized for role-based logic)
 - **Testing**: [PHPUnit](https://phpunit.de) (Feature & Unit tests)
@@ -59,7 +59,7 @@ Each field detail page provides a clear reason for its current status (e.g., "No
 
 ## 📐 Design Decisions & Assumptions
 
-1. **SQLite for Portability**: I chose SQLite to ensure the project can be run immediately by a reviewer without configuring a full MySQL/PostgreSQL server.
+1. **SQLite for Local Portability**: I chose SQLite for local development to ensure the project can be run immediately by a reviewer without configuring a full database server. For production, the system is configured to use **PostgreSQL** on Render for improved reliability and performance.
 2. **Computed vs. Cached Status**: Field status is computed on-the-fly to ensure it always reflects the latest business rules, rather than relying on manual updates or brittle database triggers.
 3. **Internal Assignment**: It is assumed that only Admins can assign fields, and only users with the `field_agent` role can be assigned.
 4. **Registration**: While default registration routes exist, the intended flow is for Admins to manage user accounts. New users default to the `field_agent` role.
@@ -134,6 +134,6 @@ Use these accounts to explore the system:
 
 ## 📈 Trade-offs & Future Improvements
 
-- **Scalability**: For a production system with thousands of fields, I would migrate to MySQL/PostgreSQL and implement status caching with scheduled invalidation.
+- **Scalability**: The system is already configured to use **PostgreSQL** in production (Render) to handle concurrent users and data integrity. For much larger datasets, I would implement status caching with scheduled invalidation.
 - **Mobile App**: While the UI is responsive, a dedicated mobile app using Flutter or React Native would provide better offline support for agents in remote fields.
 - **Geospatial Data**: Adding GIS coordinates and map views would enhance the "Field Monitoring" aspect significantly.
